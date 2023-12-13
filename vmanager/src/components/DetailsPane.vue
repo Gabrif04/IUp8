@@ -1,18 +1,48 @@
 <script setup>
 import { resolve, VmState } from '../model.js'
 
-defineEmits(['editVm', 'filterVm', 'rmVm', 'editGroup', 'filterGroup', 'rmGroup', 'setState'])
+const emit = defineEmits(['editVm', 'filterVm', 'rmVm', 'editGroup', 'filterGroup', 'rmGroup', 'setState', 'cloneGroup'])
 
 const props = defineProps({
   element: Object
 })
-
 function list(state) {
   return props.element.members
     .map(v=>resolve(v))
     .filter(vm=>state ? vm.state == state : true)
     .map(o=>o.name).join(' ');
 }
+
+
+/*... EJ6 ...*/ 
+function confirmDeleteVm() {
+
+  if (window.confirm('¿Estás seguro de que quiere eliminar la máquina?')) {
+    emit('rmVm');
+  } else {
+    window.close();
+  }
+}
+function confirmDeleteGroup() {
+  if (window.confirm('¿Estás seguro de que quiere eliminar el grupo?')) {
+    emit('rmGroup');
+  } else {
+    window.close();
+  }
+}
+
+function editSafeVm(){
+  if (props.element.state == VmState.RUNNING){
+    window.alert('Vm is still running, it must be stopped');
+  }
+  else if(props.element.state == VmState.SUSPENDED){
+    window.alert('Vm is suspended, it must be stopped');
+  } else{
+    emit('editVm');
+  }
+
+}
+/*... EJ6 ...*/
 </script>
 
 <template>
@@ -67,19 +97,19 @@ function list(state) {
   
     <h5>Acciones</h5>
     <div class="btn-group">
-      <button @click="$emit('editVm')" class="btn btn-outline-success">✏️</button>
+      <button @click="editSafeVm()"  title="Edit" class="btn btn-outline-success">✏</button>
 
-      <button v-if="element.groups.length" class="btn btn-outline-warning"
+      <button v-if="element.groups.length" title="Filter" class="btn btn-outline-warning"
         @click="$emit('filterVm')" >🔬</button>
       
-      <button v-if="element.state != VmState.RUNNING" class="btn btn-outline-secondary"
+      <button v-if="element.state != VmState.RUNNING" title="Play" class="btn btn-outline-secondary"
         @click="$emit('setState', VmState.RUNNING)" >▶</button>
-      <button v-if="element.state != VmState.SUSPENDED" class="btn btn-outline-secondary"
+      <button v-if="element.state != VmState.SUSPENDED" title="Sleep" class="btn btn-outline-secondary"
         @click="$emit('setState', VmState.SUSPENDED)">💤</button>
-      <button v-if="element.state != VmState.STOPPED" class="btn btn-outline-secondary"
+      <button v-if="element.state != VmState.STOPPED" title="Stop" class="btn btn-outline-secondary"
         @click="$emit('setState', VmState.STOPPED)">🛑</button>
       
-      <button @click="$emit('rmVm')" class="btn btn-outline-danger">🗑️</button>
+      <button @click="confirmDeleteVm()" title="Papelera" class="btn btn-outline-danger">🗑</button>
     </div>
 
     </div>
@@ -114,9 +144,19 @@ function list(state) {
 
     <h5>Acciones</h5>
     <div class="btn-group">
-      <button @click="$emit('editGroup')" class="btn btn-outline-success">✏️</button>
-      <button @click="$emit('filterGroup')" class="btn btn-outline-warning">🔬</button>
-      <button @click="$emit('rmGroup')" class="btn btn-outline-danger">🗑️</button>
+      <button @click="$emit('editGroup')" title="Editar" class="btn btn-outline-success">✏</button>
+      <button @click="$emit('filterGroup')" title="Filtrar" class="btn btn-outline-warning">🔬</button>
+      <button @click="confirmDeleteGroup()" title="Papelera" class="btn btn-outline-danger">🗑</button>
+    
+      <!-- ... EJ7... -->
+      <button v-if="element.state != VmState.RUNNING" title="Play" class="btn btn-outline-secondary"
+        @click="$emit('setState', VmState.RUNNING)" >▶</button>
+      <button v-if="element.state != VmState.SUSPENDED" title="Sleep" class="btn btn-outline-secondary"
+        @click="$emit('setState', VmState.SUSPENDED)">💤</button>
+      <button v-if="element.state != VmState.STOPPED" title="Stop" class="btn btn-outline-secondary"
+        @click="$emit('setState', VmState.STOPPED)">🛑</button>
+      <button @click="$emit('cloneGroup')" class="btn btn-outline-success">Clonar</button>
+      <!-- ... EJ7... -->
     </div>
   </div>
 </template>
@@ -134,6 +174,5 @@ function list(state) {
   }
   h5 {
     margin-top: 1em;
-  }
-
+    }
 </style>

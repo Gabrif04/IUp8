@@ -1,24 +1,29 @@
 <script setup>
 import * as M from './model.js'
 
+
 import VmGrid from './components/VmGrid.vue'
 import FilterAddBox from './components/FilterAddBox.vue'
 import VmAddOrEditModal from './components/VmAddOrEditModal.vue'
 import GroupAddOrEditModal from './components/GroupAddOrEditModal.vue'
 import DetailsPane from './components/DetailsPane.vue'
 
+
 import { ref, onMounted, nextTick } from 'vue'
 import * as bootstrap from 'bootstrap'
+
 
 // inicializa modelo (si esto fuese de verdad, habría un login previo)
 M.init();
 // trampas: da acceso al modelo desde la consola
 window.M = M
 
+
 // las partes que nos interesan
 const vms = ref(M.getVms());
 const groups = ref(M.getGroups());
 const selected = ref({id: -1});
+
 
 // tooltips
 onMounted(() => {
@@ -26,6 +31,7 @@ onMounted(() => {
   [...document.querySelectorAll('[data-bs-toggle="tooltip"]')]
     .map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 })
+
 
 // recarga vistas
 function refresh() {
@@ -36,15 +42,19 @@ function refresh() {
   }
 }
 
+
 /////
 // Vms
 /////
+
 
 // modal para añadir/editar vms
 let vmModalRef = ref(null);
 const defaultNewVm = new M.Vm(-1, 'nueva máquina', 4, 100, 50, 1,
         "0.0.0.0", 100, 100, -1, M.VmState.STOPPED, 100, 100, []);
 let vmToAddOrEdit = ref(defaultNewVm);
+
+
 
 
 // empieza a editar una Vm; pasa -1 para crear una nueva
@@ -58,6 +68,7 @@ async function edVm(id) {
   vmModalRef.value.show()
 }
 
+
 function rmVm(id) {
   M.rmVm(id);
   if (selected.value.id == id) {
@@ -66,21 +77,37 @@ function rmVm(id) {
   refresh();
 }
 
+/* ... EJ7 ...*/
 function setState(id, state) {
   const vm = M.resolve(id);
-  vm.state = state;
-  M.setVm(vm);
+  if(Array.isArray(vm.members)){
+    for(var i = 0; i < vm.members.length;i++){
+      setState(vm.members[i],state);
+    }
+  }else{
+    vm.state = state;
+    M.setVm(vm);
+  }
   refresh();
 }
+function cloneGroup(id){
+  let g = M.resolve(id);
+  g = M.addGroup(new M.Group(-1, `Copia de ${g.name}`, g.members));
+  selected.value = g;
+  refresh();
+}
+/* ... EJ7 ...*/
 
 /////
 // Grupos
 /////
 
+
 // modal para añadir/editar grupos
 let groupModalRef = ref(null);
 const defaultNewGroup = new M.Group(-1, 'nuevo grupo', []);
 let groupToAddOrEdit = ref(defaultNewGroup);
+
 
 // empieza a editar un grupo; pasa -1 para crear uno nuevo
 async function edGroup(id) {
@@ -93,6 +120,7 @@ async function edGroup(id) {
   groupModalRef.value.show()
 }
 
+
 function rmGroup(id) {
   M.rmGroup(id);
   if (selected.value.id == id) {
@@ -101,40 +129,47 @@ function rmGroup(id) {
   refresh();
 }
 
+
 /////
 // Búsqueda y Filtrado
 /////
+
 
 const searchGroupQuery = ref({all: '', fields: []})
 const searchVmQuery = ref({all: '', fields: []})
 const debug = false;
 
+
 const vmFilterGroup = ref(null)
 const groupFilterVm = ref(null)
+
 
 // muestra sólo vms de ese grupo (o todas con -1)
 const switchVms = (groupId) => {
   console.log('vms for group ', groupId);
-  vms.value = (groupId == -1) ? 
+  vms.value = (groupId == -1) ?
     M.getVms() :
     M.resolve(groupId).members.map(vmId => M.resolve(vmId))
-  vmFilterGroup.value = (groupId == -1) ? 
+  vmFilterGroup.value = (groupId == -1) ?
     null :
     M.resolve(groupId)    
 }
 
+
 // muestra sólo grupos con esa vm (o todos con -1)
 const switchGroups = (vmId) => {
   console.log('groups for vm ', vmId);
-  groups.value = (vmId == -1) ? 
+  groups.value = (vmId == -1) ?
     M.getGroups() :
     M.resolve(vmId).groups.map(groupId => M.resolve(groupId))
-  groupFilterVm.value = (vmId == -1) ? 
+  groupFilterVm.value = (vmId == -1) ?
     null :
     M.resolve(vmId)        
 }
 
+
 </script>
+
 
 <template>
   <!-- Navbar principal -->
@@ -145,6 +180,7 @@ const switchGroups = (vmId) => {
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -166,8 +202,9 @@ const switchGroups = (vmId) => {
     </div>
   </nav>
 
-  <!-- 
-    Div principal; container-fluid expande el contenedor para que ocupe todo el espacio disponible 
+
+  <!--
+    Div principal; container-fluid expande el contenedor para que ocupe todo el espacio disponible
   -->
   <div class="container-fluid">
     <div class="row">
@@ -177,15 +214,15 @@ const switchGroups = (vmId) => {
           <h5 class="d-inline">Grupos
             <span v-if="groupFilterVm" class="filter"
               @click="switchGroups(-1)">
-              que contienen a 
+              que contienen a
               <span class="name">{{ groupFilterVm.name }}×</span>
             </span>            
           </h5>
           <a class="d-inline d-sm-none details" href="#div-details">↘️</a>
         </div>        
         <span v-if="debug"> {{ searchGroupQuery }}</span>        
-        <FilterAddBox 
-          v-model="searchGroupQuery" 
+        <FilterAddBox
+          v-model="searchGroupQuery"
           :cols="['name', 'members']"
           @add-element="edGroup(-1)"
           addBtnTitle="Añadir nuevo grupo"/>          
@@ -199,7 +236,7 @@ const switchGroups = (vmId) => {
       <div id="div-vms" class="col-md">
         <div>
           <a class="d-inline d-sm-none escape" href="#">⬆️</a>
-          <h5 class="d-inline">Máquinas Virtuales 
+          <h5 class="d-inline">Máquinas Virtuales
             <span v-if="vmFilterGroup" class="filter"
               @click="switchVms(-1)">
               dentro de
@@ -207,10 +244,10 @@ const switchGroups = (vmId) => {
             </span>            
           </h5>
           <a class="d-inline d-sm-none details" href="#div-details">↘️</a>
-        </div>           
+        </div>          
         <span v-if="debug"> {{ searchVmQuery }}</span>
-        <FilterAddBox 
-          v-model="searchVmQuery" 
+        <FilterAddBox
+          v-model="searchVmQuery"
           :cols="['name', 'ram', 'hd', 'ip']"
           @add-element="edVm(-1)"
           addBtnTitle="Añadir nueva VM"/>
@@ -225,9 +262,9 @@ const switchGroups = (vmId) => {
         <div>
           <a class="d-inline d-sm-none escape" href="#">⬆️</a>
           <h5 class="d-inline">Detalles</h5>
-        </div>   
+        </div>  
         <div id="details" class="container">
-          <DetailsPane 
+          <DetailsPane
             :element="selected"
             @editVm="edVm(selected.id)"
             @filterVm="switchGroups(selected.id)"
@@ -236,24 +273,27 @@ const switchGroups = (vmId) => {
             @filterGroup="switchVms(selected.id)"
             @rmGroup="rmGroup(selected.id)"
             @setState="state=>setState(selected.id, state)"
+            @cloneGroup="cloneGroup(selected.id)"
           ></DetailsPane>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 
+
+  <!--
     Modal para crear/editar grupo
     siempre usamos el mismo, y no se muestra hasta que hace falta
   -->
-  <GroupAddOrEditModal ref="groupModalRef" 
+  <GroupAddOrEditModal ref="groupModalRef"
     :key="groupToAddOrEdit.id"
     :group="groupToAddOrEdit" :isAdd="groupToAddOrEdit.id == -1"
     @add="(g) => { console.log('adding', g); M.addGroup(g); refresh() }"
     @edit="(g) => { console.log('setting', g); M.setGroup(g); refresh() }"
     />
 
-  <!-- 
+
+  <!--
     Modal para crear/editar VM
     siempre usamos el mismo, y no se muestra hasta que hace falta
   -->
@@ -264,6 +304,7 @@ const switchGroups = (vmId) => {
     @edit="(vm) => { console.log('setting', vm); M.setVm(vm); refresh() }"
     />
 </template>
+
 
 <style>
 #app {
@@ -289,5 +330,6 @@ span.filter {
 span.filter:hover {
   border-bottom: 2px dashed blue;
 }
+
 
 </style>

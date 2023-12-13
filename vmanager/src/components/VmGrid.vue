@@ -16,6 +16,15 @@ const sortOrders = ref(
   props.columns.reduce((o, key) => ((o[key] = 1), o), {})
 )
 
+/*... EJ4...*/
+function generateTooltipContent(machines) {
+  // Lógica para generar el contenido del tooltip con los nombres de las máquinas
+  const additionalMachines = machines.slice(4);
+  const machineNames = additionalMachines.map((value) => resolve(value).name);
+  return machineNames.join('\n');
+}
+/*... EJ4...*/
+
 const filteredData = computed(() => {
   let { data, filterKey } = props
   if (filterKey) {
@@ -49,31 +58,36 @@ function capitalize(str) {
 </script>
 
 <template>
-  <table v-if="filteredData.length">
+  <table v-if="filteredData.length" class="table">
     <thead>
       <tr>
-        <th v-for="key in columns" :key="key"
-          @click="sortBy(key)"
-          :class="{ active: sortKey == key }">
+        <th v-for="key in columns" :key="key" @click="sortBy(key)" :class="{ active: sortKey == key }">
           {{ capitalize(key) }}
-          <span v-if="sortKey==key" :class="`arrow ${sortOrders[key] > 0 ? 'asc' : 'dsc'}`">
-          </span>
+          <span v-if="sortKey == key" :class="`arrow ${sortOrders[key] > 0 ? 'asc' : 'dsc'}`"></span>
         </th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="entry in filteredData" :key="entry.id" 
-        @click="$emit('choose', entry.id)">
-
+      <tr v-for="entry in filteredData" :key="entry.id" @click="$emit('choose', entry.id)">
         <td v-for="key in columns" :key="`_${entry.id}_${key}`" class="text-start">
           <template v-if="key === 'name'">
-            <span class="name">{{entry[key]}}</span>
+            <span class="name">{{ entry[key] }}</span>
           </template>
           <template v-else-if="Array.isArray(entry[key])">
-            {{entry[key].map(v => resolve(v).name)}}
+            <div>
+              <!-- ... EJ3  y EJ2... -->
+              <span v-for="(value, index) in entry[key].slice(0,4)" :key="index" class="badge bg-primary me-1">
+                {{ resolve(value).name }}
+              </span>
+              <!-- ... EJ4... -->
+              <span v-if="entry[key].length > 4" :title=generateTooltipContent(entry[key]) class="badge">
+                +{{ entry[key].length - 4 }}
+              </span>
+              <!-- ... EJ3 y EJ2 ... -->
+            </div>
           </template>
           <template v-else>
-            {{entry[key]}}
+            {{ entry[key] }}
           </template>
         </td>
       </tr>
@@ -84,20 +98,37 @@ function capitalize(str) {
 
 <style>
 .arrow.asc::after {
-  content: "↓"
+  content: "↓";
 }
 .arrow.dsc::after {
-  content: "↑"
+  content: "↑";
 }
 span.name {
   font-weight: 1000;
 }
 table {
   margin-top: 10px;
-
 }
 thead>tr {
   border-bottom: 1px solid gray;
   color: rgb(104, 103, 103);
 }
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.badge {
+  background-color: #000000; /* Cambia el color de fondo del badge */
+  color: #ffffff; /* Cambia el color del texto del badge */
+  font-size: 12px; /* Cambia el tamaño del texto del badge */
+  padding: 5px 8px; /* Ajusta el relleno del badge según sea necesario */
+  margin-bottom: 5px; /* Ajusta el margen inferior del badge según sea necesario */
+}
+
+.badge.bg-primary.me-1 {
+  margin-bottom: 5px;
+}
+
 </style>
