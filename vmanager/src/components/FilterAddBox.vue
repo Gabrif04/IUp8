@@ -46,11 +46,14 @@ function send() {
       class="btn btn-outline-primary">➕</button>
     </div>
   </div>
+  <!-- ej8 -->
   <div v-if="advSearch" class="row mt-3">
     <div class="col-auto">
       Filtros por campos:
-      {{ cols }}
+    <span v-for="(col, index) in cols" :key="index" class="badge"> {{ col }} </span>
     </div>
+  <!-- ej8 -->
+    
   </div>
 </template>
 
