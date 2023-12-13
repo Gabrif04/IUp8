@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { resolve } from '../model.js'
+import { VmState, resolve } from '../model.js'
 
 // basado en https://vuejs.org/examples/#grid
 
@@ -58,7 +58,7 @@ function capitalize(str) {
 </script>
 
 <template>
-  <table v-if="filteredData.length" class="table">
+  <table v-if="filteredData.length" class="mitable table">
     <thead>
       <tr>
         <th v-for="key in columns" :key="key" @click="sortBy(key)" :class="{ active: sortKey == key }">
@@ -84,8 +84,26 @@ function capitalize(str) {
                 +{{ entry[key].length - 4 }}
               </span>
               <!-- ... EJ3 y EJ2 ... -->
+
+              <!-- ... EJ8 ... -->
+              <span v-if="entry[key].length == 0" class="badge">
+                {{"None"}}
+              </span>
+            <!-- ... EJ8 ... -->
             </div>
           </template>
+
+
+             <!-- ... EJ8 ... -->         
+          <template v-else-if="key==='state'">       
+              <span v-if="entry[key]==VmState.RUNNING" class="badge_running">{{"Funcionando"}}
+              </span>
+              <span v-if="entry[key]==VmState.SUSPENDED" class="badge_suspended">{{"Suspendida"}}
+              </span>
+              <span v-if="entry[key]==VmState.STOPPED" class="badge_stopped">{{"Apagada"}}
+              </span>
+          </template>
+            <!-- ... EJ8 ... -->
           <template v-else>
             {{ entry[key] }}
           </template>
@@ -97,6 +115,14 @@ function capitalize(str) {
 </template>
 
 <style>
+
+.mitable td, .mitable th{
+
+  background-color: #04172c;
+
+  color: #ffffff;
+}
+
 .arrow.asc::after {
   content: "↓";
 }
@@ -120,15 +146,40 @@ thead>tr {
 }
 
 .badge {
-  background-color: #000000; /* Cambia el color de fondo del badge */
-  color: #ffffff; /* Cambia el color del texto del badge */
-  font-size: 12px; /* Cambia el tamaño del texto del badge */
-  padding: 5px 8px; /* Ajusta el relleno del badge según sea necesario */
-  margin-bottom: 5px; /* Ajusta el margen inferior del badge según sea necesario */
+  background-color: #ffffff;  
+  color: #090000;  
+  font-size: 12px;  
+  padding: 5px 8px; 
+  margin-bottom: 5px;  
+}
+
+/*ej8*/  
+.badge_running {
+  background-color: #0e8d00;  
+  color: #ffffff;  
+  font-size: 12px;  
+  padding: 5px 8px;  
+  margin-bottom: 5px;  
+}
+.badge_stopped {
+  background-color: #f90202;  
+  color: #ffffff;  
+  font-size: 12px;  
+  padding: 5px 8px;  
+  margin-bottom: 5px;  
+}
+.badge_suspended {
+  background-color: #ed9a00;  
+  color: #ffffff;  
+  font-size: 12px;  
+  padding: 5px 8px;  
+  margin-bottom: 5px;  
 }
 
 .badge.bg-primary.me-1 {
   margin-bottom: 5px;
-}
 
+  color: #ffffff;  
+}
+/*ej8*/  
 </style>
