@@ -193,9 +193,10 @@ const switchGroups = (vmId) => {
         </ul>        
           <div class="nav-item ms-auto">
             <div class="btn-group">
-              <button id="save" class="btn btn-outline-secondary">💾</button>
-              <button id="clean" class="btn btn-outline-secondary">🧽</button>
-              <button id="restore" class="btn btn-outline-secondary">↩️</button>
+            <!-- ej8 -->
+              <button id="DarkMode" title="Dark Mode" class="btn btn-outline-secondary">🌙</button> 
+              <!-- <button id="clean" title="Clean" class="btn btn-outline-secondary">🧽</button>
+              <button id="restore" title="Restore" class="btn btn-outline-secondary">↩️</button> -->
             </div>
           </div>
       </div>
@@ -311,8 +312,38 @@ const switchGroups = (vmId) => {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  background-color: #04172c;
+
+  color: #ffffff;
 }
+
+
+
+.navbar {
+  color: #ffffff; /* Cambia el color del texto de la barra de navegación a blanco */
+}
+
+.navbar-toggler-icon {
+  background-color: #ffffff; /* Cambia el color del icono del botón de navegación a blanco */
+}
+
+.navbar-brand {
+  color: #ffffff !important; /* Cambia el color del texto del navbar-brand a blanco */
+}
+
+.nav-link {
+  color: #ffffff !important; /* Cambia el color del texto de los enlaces de navegación a blanco */
+}
+
+.btn-outline-secondary {
+  color: #ffffff; /* Cambia el color del texto de los botones a blanco */
+}
+
+.filter:hover {
+  border-bottom: 2px dashed blue;
+}
+
+
 .escape {
   font-size: 150%;
   padding-right: 1em;
