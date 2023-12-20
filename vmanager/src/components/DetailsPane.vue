@@ -17,14 +17,14 @@ function list(state) {
 /*... EJ6 ...*/ 
 function confirmDeleteVm() {
 
-  if (window.confirm('¿Estás seguro de que quiere eliminar la máquina?')) {
+  if (window.confirm('Are you sure you want to delete this machine?')) {
     emit('rmVm');
   } else {
     window.close();
   }
 }
 function confirmDeleteGroup() {
-  if (window.confirm('¿Estás seguro de que quiere eliminar el grupo?')) {
+  if (window.confirm('Are you sure you want to delete this group?')) {
     emit('rmGroup');
   } else {
     window.close();
@@ -47,55 +47,55 @@ function editSafeVm(){
 
 <template>
   <div v-if="element == null || element.id == -1">
-    (selecciona una Vm o un grupo para ver sus detalles)
+    (select a VM or a group to see its details)
   </div>
   <div v-else-if="Array.isArray(element.groups)">
-    <h4>máquina virtual <span class="name">{{element.name}}</span></h4>
+    <h4>virtual machine <span class="name">{{element.name}}</span></h4>
 
     <table>
       <tr>
-        <th>Estado</th>
+        <th>State</th>
         <td>{{ element.state }} </td>
       </tr>
       <tr>
-        <th>Memoria</th>
+        <th>M</th>
         <td>{{ element.ram }} Gb</td>
       </tr>
       <tr>
-        <th>Disco</th>
+        <th>Disk</th>
         <td>{{ element.hd }} Gb</td>
       </tr>
       <tr>
-        <th>Máximo uso de CPU</th>
+        <th>Maximum CPU usage</th>
         <td>{{ element.cpu }} %</td>
       </tr>
       <tr>
-        <th>Núcleos de CPU</th>
+        <th>CPU cores</th>
         <td>{{ element.cores }}</td>
       </tr>
       <tr>
-        <th>Dirección IPv4</th>
+        <th>IPv4 address</th>
         <td>{{ element.ip }}</td>
       </tr>
       <tr>
-        <th>Ancho de banda máximo</th>
-        <td>{{ element.up }} Kbps de subida<br>{{ element.down }} Kbps de bajada</td>
+        <th>Maximum bandwith</th>
+        <td>{{ element.up }} Upload Kbps<br>{{ element.down }} Download Kbps</td>
       </tr>
       <tr>
-        <th>Disco externo virtual</th>
+        <th>Virtual extern disk</th>
         <td v-if="element.iso != -1">{{ resolve(element.iso).name }}</td>
-        <td v-else> (ninguno) </td>
+        <td v-else> (none) </td>
       </tr>
       <tr>
-        <th>Grupos a los que pertenece</th>
+        <th>Groups belonging to</th>
         <td v-if="element.groups.length">
           {{ element.groups.map(g => resolve(g).name).join(' ') }}
         </td>
-        <td v-else> (ninguno) </td>
+        <td v-else> (none) </td>
       </tr>
     </table>
   
-    <h5>Acciones</h5>
+    <h5>Actions</h5>
     <div class="btn-group">
       <button @click="editSafeVm()"  title="Edit" class="btn btn-outline-success">✏</button>
 
@@ -109,44 +109,44 @@ function editSafeVm(){
       <button v-if="element.state != VmState.STOPPED" title="Stop" class="btn btn-outline-secondary"
         @click="$emit('setState', VmState.STOPPED)">🛑</button>
       
-      <button @click="confirmDeleteVm()" title="Papelera" class="btn btn-outline-danger">🗑</button>
+      <button @click="confirmDeleteVm()" title="Bin" class="btn btn-outline-danger">🗑</button>
     </div>
 
     </div>
 
   <div v-else>
-    <h4>grupo <span class="name">{{element.name}}</span></h4>
+    <h4>group <span class="name">{{element.name}}</span></h4>
 
-    <b>{{ element.members.length }} integrantes</b>
+    <b>{{ element.members.length }} members</b>
     <table>
       <tr>
-        <th>{{ element.members.length }} integrantes</th>
+        <th>{{ element.members.length }} members</th>
         <td v-if="element.members.length">{{ list(false) }}
         </td>
-        <td v-else> (no hay) </td>
+        <td v-else> (none) </td>
       </tr>
       <tr>
-        <th>Encendidas</th>
+        <th>Powered On</th>
         <td v-if="list(VmState.RUNNING).length">{{ list(VmState.RUNNING) }}</td>
-        <td v-else> (no hay) </td>
+        <td v-else> (none) </td>
       </tr>
       <tr>
-        <th>Suspendidas</th>
+        <th>Suspended</th>
         <td v-if="list(VmState.SUSPENDED).length">{{ list(VmState.SUSPENDED) }}</td>
-        <td v-else> (no hay) </td>
+        <td v-else> (none) </td>
       </tr>
       <tr>
-        <th>Apagadas</th>
+        <th>Off</th>
         <td v-if="list(VmState.STOPPED).length">{{ list(VmState.STOPPED) }}</td>
-        <td v-else> (no hay) </td>
+        <td v-else> (none) </td>
       </tr>
     </table>
 
     <h5>Acciones</h5>
     <div class="btn-group">
-      <button @click="$emit('editGroup')" title="Editar" class="btn btn-outline-success">✏</button>
-      <button @click="$emit('filterGroup')" title="Filtrar" class="btn btn-outline-warning">🔬</button>
-      <button @click="confirmDeleteGroup()" title="Papelera" class="btn btn-outline-danger">🗑</button>
+      <button @click="$emit('editGroup')" title="Edit" class="btn btn-outline-success">✏</button>
+      <button @click="$emit('filterGroup')" title="Filter" class="btn btn-outline-warning">🔬</button>
+      <button @click="confirmDeleteGroup()" title="Bin" class="btn btn-outline-danger">🗑</button>
     
       <!-- ... EJ7... -->
       <button v-if="element.state != VmState.RUNNING" title="Play" class="btn btn-outline-secondary"
@@ -155,7 +155,7 @@ function editSafeVm(){
         @click="$emit('setState', VmState.SUSPENDED)">💤</button>
       <button v-if="element.state != VmState.STOPPED" title="Stop" class="btn btn-outline-secondary"
         @click="$emit('setState', VmState.STOPPED)">🛑</button>
-      <button @click="$emit('cloneGroup')" class="btn btn-outline-success">Clonar</button>
+      <button @click="$emit('cloneGroup')" class="btn btn-outline-success">Clone</button>
       <!-- ... EJ7... -->
     </div>
   </div>

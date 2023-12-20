@@ -34,7 +34,7 @@ const read = computed(() => {
       <label :for="id" class="form-label">{{ label }}</label>
     </div>
     <div class="col-9 text-start">
-      <div v-for="o in possible" :key="o.id" class="caja">
+      <div v-for="o in possible" :key="o.id" class="box">
         <span v-if="current.some(c => c.id == o.id)" class="exists"
           @click="rm(o.id)">
           {{ o.name }}
@@ -49,11 +49,17 @@ const read = computed(() => {
 </template>
 
 <style scoped>
+
+#app{
+  background-color: #04172c;
+}
 .exists {
   background-color: lightblue;
 }
 .caja {
   display: inline-block;
   padding: 2px;
+  color: #151010 !important; /* Cambia el color del texto del navbar-brand a blanco */
+
 }
 </style>

@@ -50,7 +50,7 @@ function refresh() {
 
 // modal para añadir/editar vms
 let vmModalRef = ref(null);
-const defaultNewVm = new M.Vm(-1, 'nueva máquina', 4, 100, 50, 1,
+const defaultNewVm = new M.Vm(-1, 'new virtual machine', 4, 100, 50, 1,
         "0.0.0.0", 100, 100, -1, M.VmState.STOPPED, 100, 100, []);
 let vmToAddOrEdit = ref(defaultNewVm);
 
@@ -92,7 +92,7 @@ function setState(id, state) {
 }
 function cloneGroup(id){
   let g = M.resolve(id);
-  g = M.addGroup(new M.Group(-1, `Copia de ${g.name}`, g.members));
+  g = M.addGroup(new M.Group(-1, `Copy of ${g.name}`, g.members));
   selected.value = g;
   refresh();
 }
@@ -105,7 +105,7 @@ function cloneGroup(id){
 
 // modal para añadir/editar grupos
 let groupModalRef = ref(null);
-const defaultNewGroup = new M.Group(-1, 'nuevo grupo', []);
+const defaultNewGroup = new M.Group(-1, 'new group', []);
 let groupToAddOrEdit = ref(defaultNewGroup);
 
 
@@ -139,7 +139,7 @@ const searchGroupQuery = ref({all: '', fields: []})
 const searchVmQuery = ref({all: '', fields: []})
 const debug = false;
 
-
+const dark = ref(false);
 const vmFilterGroup = ref(null)
 const groupFilterVm = ref(null)
 
@@ -166,8 +166,6 @@ const switchGroups = (vmId) => {
     null :
     M.resolve(vmId)        
 }
-
-
 </script>
 
 
@@ -185,7 +183,7 @@ const switchGroups = (vmId) => {
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#div-groups">Grupos</a>
+          <a class="nav-link active" aria-current="page" href="#div-groups">Groups</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#div-vms">Vms</a>
@@ -194,7 +192,9 @@ const switchGroups = (vmId) => {
           <div class="nav-item ms-auto">
             <div class="btn-group">
             <!-- ej8 -->
-              <button id="DarkMode" title="Dark Mode" class="btn btn-outline-secondary">🌙</button> 
+              <button id="DarkMode" title="Dark Mode" class="btn btn-outline-secondary"
+>🌙</button> 
+              
               <!-- <button id="clean" title="Clean" class="btn btn-outline-secondary">🧽</button>
               <button id="restore" title="Restore" class="btn btn-outline-secondary">↩️</button> -->
             </div>
@@ -212,10 +212,10 @@ const switchGroups = (vmId) => {
       <!-- 1a columna: grupos -->
       <div id="div-groups" class="col-md">
         <div>
-          <h5 class="d-inline">Grupos
+          <h5 class="d-inline">Groups
             <span v-if="groupFilterVm" class="filter"
               @click="switchGroups(-1)">
-              que contienen a
+              that contains
               <span class="name">{{ groupFilterVm.name }}×</span>
             </span>            
           </h5>
@@ -226,7 +226,7 @@ const switchGroups = (vmId) => {
           v-model="searchGroupQuery"
           :cols="['name', 'members']"
           @add-element="edGroup(-1)"
-          addBtnTitle="Añadir nuevo grupo"/>          
+          addBtnTitle="Add new group"/>          
         <div class="overflow-y-scroll vh-100">
             <VmGrid :data="groups" :columns="['name', 'members']" :filter-key="searchGroupQuery.all"
             @choose="(e) => { console.log('selected vm', e); selected = M.resolve(e) }">
@@ -237,10 +237,10 @@ const switchGroups = (vmId) => {
       <div id="div-vms" class="col-md">
         <div>
           <a class="d-inline d-sm-none escape" href="#">⬆️</a>
-          <h5 class="d-inline">Máquinas Virtuales
+          <h5 class="d-inline">Virtual Machines
             <span v-if="vmFilterGroup" class="filter"
               @click="switchVms(-1)">
-              dentro de
+              into
               <span class="name">{{ vmFilterGroup.name }}×</span>
             </span>            
           </h5>
@@ -251,7 +251,7 @@ const switchGroups = (vmId) => {
           v-model="searchVmQuery"
           :cols="['name', 'ram', 'hd', 'ip']"
           @add-element="edVm(-1)"
-          addBtnTitle="Añadir nueva VM"/>
+          addBtnTitle="Add new VM"/>
         <div class="overflow-y-scroll vh-100">
           <VmGrid :data="vms" :columns="['name', 'ram', 'groups', 'state']" :filter-key="searchVmQuery.all"
           @choose="(e) => { console.log('selected group', e); selected = M.resolve(e) }">
@@ -262,7 +262,7 @@ const switchGroups = (vmId) => {
       <div id="div-details" class="col-md">
         <div>
           <a class="d-inline d-sm-none escape" href="#">⬆️</a>
-          <h5 class="d-inline">Detalles</h5>
+          <h5 class="d-inline">Details</h5>
         </div>  
         <div id="details" class="container">
           <DetailsPane
@@ -309,6 +309,15 @@ const switchGroups = (vmId) => {
 
 <style>
 #app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #04172c;
+
+  color: #ffffff;
+}
+
+#app.dark {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

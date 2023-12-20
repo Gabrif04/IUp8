@@ -50,22 +50,22 @@ defineExpose({ show });
 
 <template>
   <VModal ref="modalRef" id="groupAddOrEditModal"
-    :title="isAdd ? 'Añadiendo nuevo grupo' : `Editando grupo: ${group.name}`" >
+    :title="isAdd ? 'Adding new group' : `Editing new group: ${group.name}`" >
     <template #body>
       <form id="editOrAddGroup" 
         @submit.prevent="e => setGroup()">
         <div class="container">
-          <TextBox :start="group.name" id="g-name" label="nombre" />
+          <TextBox :start="group.name" id="g-name" label="name" />
         </div>
         <div class="container">
-          <MemberBox :start="group.members" :all="M.getVms()" id="g-members" label="miembros" />
+          <MemberBox :start="group.members" :all="M.getVms()" id="g-members" label="members" />
         </div>
         <button type="submit" class="invisible">Submit</button>
       </form>
     </template>
     <template #footer>
       <button @click.prevent="() => setGroup()" class="btn btn-primary">
-        {{ isAdd ? 'Añadir este grupo' : `Confirmar cambios a ${group.name}` }}
+        {{ isAdd ? 'Add the group' : `Confirm changes to ${group.name}` }}
       </button>
     </template>
   </VModal>

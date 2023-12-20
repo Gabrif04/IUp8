@@ -68,13 +68,13 @@ defineExpose({ show });
 
 <template>
   <VModal ref="modalRef" id="vmAddOrEditModal"
-    :title="isAdd ? 'Añadiendo VM' : `Editando VM: ${vm.name}`" >
+    :title="isAdd ? 'Adding VM' : `Editing VM: ${vm.name}`" >
     <template #body>
       <form id="editOrAddVm" 
         @submit.prevent="e => setVm()">
         <div class="container">
-          <TextBox :start="vm.name" id="e-name" label="nombre" />
-          <MemberBox :start="vm.groups" :all="M.getGroups()" id="e-groups" label="grupos" />
+          <TextBox :start="vm.name" id="e-name" label="name" />
+          <MemberBox :start="vm.groups" :all="M.getGroups()" id="e-groups" label="groups" />
           <br>
           <RangeBox :start="vm.ram" id="e-ram" label="ram" :min="0" :max="128" units="Gb" />
           <RangeBox :start="vm.hd" id="e-hdd" label="hdd" :min="0" :max="4 * 1024" :step="256" units="Gb" />
@@ -85,18 +85,21 @@ defineExpose({ show });
           <RangeBox :start="vm.up" id="e-up" label="up" :min="0" :max="1024 * 20" units="Kbps" />
           <RangeBox :start="vm.down" id="e-down" label="down" :min="0" :max="1024 * 20" units="Kbps" />
           <br>
-          <SelectBox :start="vm.iso" :all="M.getFiles()" id="e-iso" label="Fichero ISO" />
+          <SelectBox :start="vm.iso" :all="M.getFiles()" id="e-iso" label= "ISO File" />
         </div>
         <button type="submit" class="invisible">Submit</button>
       </form>
     </template>
     <template #footer>
       <button @click.prevent="() => setVm()" class="btn btn-primary">
-        {{ isAdd ? 'Añadir esta VM' : `Confirmar cambios a ${vm.name}` }}
+        {{ isAdd ? 'Add this VM' : `Confirm changes to ${vm.name}` }}
       </button>
     </template>
   </VModal>
 </template>
 
 <style scoped>
+.modal-content{
+  background-color: #04172c;
+}
 </style>

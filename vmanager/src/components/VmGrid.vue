@@ -96,11 +96,11 @@ function capitalize(str) {
 
              <!-- ... EJ8 ... -->         
           <template v-else-if="key==='state'">       
-              <span v-if="entry[key]==VmState.RUNNING" class="badge_running">{{"Funcionando"}}
+              <span v-if="entry[key]==VmState.RUNNING" class="badge_running">{{"Running"}}
               </span>
-              <span v-if="entry[key]==VmState.SUSPENDED" class="badge_suspended">{{"Suspendida"}}
+              <span v-if="entry[key]==VmState.SUSPENDED" class="badge_suspended">{{"Suspended"}}
               </span>
-              <span v-if="entry[key]==VmState.STOPPED" class="badge_stopped">{{"Apagada"}}
+              <span v-if="entry[key]==VmState.STOPPED" class="badge_stopped">{{"Off"}}
               </span>
           </template>
             <!-- ... EJ8 ... -->
@@ -111,7 +111,7 @@ function capitalize(str) {
       </tr>
     </tbody>
   </table>
-  <p v-else>(no hay nada que mostrar)</p>
+  <p v-else>(there isn't anything to show)</p>
 </template>
 
 <style>

@@ -90,9 +90,9 @@ class File {
  * Possible Vm states.
  */
 const VmState = {
-    RUNNING: 'funcionando', 
-    STOPPED: 'apagada',
-    SUSPENDED: 'suspendida', 
+    RUNNING: 'Running', 
+    STOPPED: 'Off',
+    SUSPENDED: 'Suspended', 
 }
 
 /**
@@ -174,7 +174,7 @@ let state = new State();
  */
 function init(newState) {
     state = updateState(newState);
-    console.log("inicializado!", state);
+    console.log("initiated!", state);
     return state;
 }
 
@@ -236,7 +236,7 @@ function saveState() {
     }
     stack.push(randomToken);
     localStorage.setItem('stack', JSON.stringify(stack));
-    console.log(`copia guardada ${randomToken}; copias de seguridad existentes`, stack);
+    console.log(`saved copy ${randomToken}; security copies existing`, stack);
 
     localStorage.setItem(randomToken, JSON.stringify(state));
     return randomToken;

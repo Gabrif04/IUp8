@@ -13,7 +13,7 @@ const list = ref([])
 
 onMounted(() => {
   value.value = props.start;
-  list.value.push({id: -1, name: '(ningún fichero elegido)', type: null, size: 0});
+  list.value.push({id: -1, name: '(no file chosen)', type: null, size: 0});
   list.value.push(...props.all);
 })
 
