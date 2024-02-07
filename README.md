@@ -72,7 +72,3 @@ El resto de ficheros son de tipo `.vue`, y por tanto componentes-de-único-fiche
 
 * `DetailsPane.vue` proporciona la vista de detalles, tanto para Vms como para grupos, y permite también lanzar las operaciones de editar, borrar, etcétera.
 
-## Nota
-
-Este proyecto es muy mejorable, pero es suficiente para ver cómo funciona Vue, y además se aprende mucho (de Vue, usabilidad y accesibilidad) mejorando código ajeno. ¡Anímate a hacerlo!
-
